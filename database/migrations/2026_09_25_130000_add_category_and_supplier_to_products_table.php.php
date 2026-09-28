@@ -6,15 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null')->after('id');
-            $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('set null')->after('category_id');
-            $table->integer('min_stock')->default(5)->after('stock'); // Untuk Alert Stok Menipis
+            $table->unsignedBigInteger('category_id')->nullable()->after('id');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
+
+            $table->unsignedBigInteger('supplier_id')->nullable()->after('category_id');
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('set null');
+
+            $table->integer('min_stock')->default(5)->after('stock');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
