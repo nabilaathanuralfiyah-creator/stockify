@@ -2,37 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\StockTransaction;
 use Illuminate\Http\Request;
+use App\Models\Transaction;
+use App\Models\Product;
 
 class TransactionController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'product_id' => 'required|exists:products,id',
-            'type'       => 'required|in:in,out',
-            'quantity'   => 'required|numeric|min:1',
-            'note'       => 'nullable|string',
+            'type' => 'required|in:masuk,keluar',
+            'quantity' => 'required|integer|min:1',
+            'note' => 'nullable|string|max:255',
         ]);
 
-        $product = Product::findOrFail($validated['product_id']);
+        $product = Product::findOrFail($request->product_id);
 
-        if ($validated['type'] === 'out' && $product->stock < $validated['quantity']) {
-            return redirect()->back()->with('error', 'Stok tidak mencukupi!');
+        if ($request->type === 'keluar' && $product->stock < $request->quantity) {
+            return redirect()->route('dashboard', ['tab' => 'transactions'])->with('error', 'Stok tidak mencukupi untuk pengeluaran sejumlah ' . $request->quantity);
         }
 
-        // Update stok fisik produk
-        if ($validated['type'] === 'in') {
-            $product->increment('stock', $validated['quantity']);
+        Transaction::create($request->all());
+
+        if ($request->type === 'masuk') {
+            $product->stock += $request->quantity;
         } else {
-            $product->decrement('stock', $validated['quantity']);
+            $product->stock -= $request->quantity;
+        }
+        $product->save();
+
+        return redirect()->route('dashboard', ['tab' => 'transactions'])->with('success', 'Transaksi berhasil dicatat.');
+    }
+
+    public function destroy($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $product = Product::find($transaction->product_id);
+
+        if ($product) {
+            if ($transaction->type === 'masuk') {
+                $product->stock -= $transaction->quantity;
+            } else {
+                $product->stock += $transaction->quantity;
+            }
+            $product->save();
         }
 
-        // Catat riwayat transaksi
-        StockTransaction::create($validated);
+        $transaction->delete();
 
-        return redirect()->back()->with('success', 'Transaksi stok berhasil dicatat!');
+        return redirect()->route('dashboard', ['tab' => 'transactions'])->with('success', 'Transaksi berhasil dihapus dan stok dikembalikan.');
     }
 }

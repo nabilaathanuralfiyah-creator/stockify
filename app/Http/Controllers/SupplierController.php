@@ -15,21 +15,43 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name'    => 'required',
-            'phone'   => 'nullable|string',
-            'email'   => 'nullable|email',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
         ]);
 
-        Supplier::create($validated);
+        Supplier::create($request->all());
 
-        return redirect()->back()->with('success', 'Supplier berhasil ditambahkan!');
+        return redirect()->route('suppliers.index')->with('success', 'Supplier baru berhasil ditambahkan!');
+    }
+
+    public function edit($id)
+    {
+        $supplier = Supplier::findOrFail($id);
+        $suppliers = Supplier::all();
+        return view('suppliers.index', compact('supplier', 'suppliers'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+        ]);
+
+        $supplier = Supplier::findOrFail($id);
+        $supplier->update($request->all());
+
+        return redirect()->route('suppliers.index')->with('success', 'Data supplier berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        Supplier::destroy($id);
-        return redirect()->back()->with('success', 'Supplier berhasil dihapus!');
+        $supplier = Supplier::findOrFail($id);
+        $supplier->delete();
+
+        return redirect()->route('suppliers.index')->with('success', 'Supplier berhasil dihapus!');
     }
 }

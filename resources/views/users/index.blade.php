@@ -3,84 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Pengguna - Stockify</title>
+    <title>Manajemen Pengguna - Stockify</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Manajemen Pengguna</h1>
-            <a href="/products" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Kembali ke Dashboard</a>
+<body class="bg-amber-50/40 font-sans antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar Berkelompok Profesional -->
+        <aside class="w-64 bg-[#2C221E] text-amber-100 flex flex-col shadow-2xl hidden md:flex">
+            <div class="p-5 text-2xl font-black tracking-wider flex items-center space-x-3 border-b border-[#3D302B]">
+                <div class="bg-amber-700 p-2.5 rounded-xl text-white shadow-lg">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <span class="bg-gradient-to-r from-amber-200 via-orange-300 to-amber-500 bg-clip-text text-transparent">STOCKIFY</span>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-4 overflow-y-auto text-xs">
+                
+                <!-- WORKSPACE -->
+                <div class="space-y-1">
+                    <p class="px-4 text-[10px] font-bold text-amber-400 uppercase tracking-wider">Workspace</p>
+                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-chart-pie w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <!-- MASTER DATA -->
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+                <div class="space-y-1">
+                    <p class="px-4 text-[10px] font-bold text-amber-400 uppercase tracking-wider">Master Data</p>
+                    <a href="{{ route('products.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-box-archive w-5"></i>
+                        <span>Produk</span>
+                    </a>
+                    <a href="{{ route('categories.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-folder-tree w-5"></i>
+                        <span>Kategori</span>
+                    </a>
+                    <a href="{{ route('suppliers.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-truck-field w-5"></i>
+                        <span>Supplier</span>
+                    </a>
+                    @if(auth()->user()->role === 'admin')
+                    <a href="{{ route('users.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl bg-amber-700 text-white font-medium shadow-md transition text-sm">
+                        <i class="fa-solid fa-users-gear w-5"></i>
+                        <span>Pengguna</span>
+                    </a>
+                    @endif
+                </div>
+                @endif
+
+                <!-- OPERASIONAL -->
+                <div class="space-y-1">
+                    <p class="px-4 text-[10px] font-bold text-amber-400 uppercase tracking-wider">Operasional</p>
+                    <a href="{{ route('transactions.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-right-left w-5"></i>
+                        <span>Transaksi Stok</span>
+                    </a>
+                    <a href="{{ route('products.low-stock') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-triangle-exclamation w-5"></i>
+                        <span>Stok Menipis</span>
+                    </a>
+                </div>
+
+                <!-- ANALISIS & PENGATURAN -->
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+                <div class="space-y-1">
+                    <p class="px-4 text-[10px] font-bold text-amber-400 uppercase tracking-wider">Analisis & Pengaturan</p>
+                    <a href="{{ route('reports.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-file-invoice-dollar w-5"></i>
+                        <span>Laporan Stok</span>
+                    </a>
+                    <a href="{{ route('settings.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-xl text-amber-200/80 hover:bg-[#3D302B] hover:text-white transition text-sm">
+                        <i class="fa-solid fa-gears w-5"></i>
+                        <span>Pengaturan Gudang</span>
+                    </a>
+                </div>
+                @endif
+
+            </nav>
+
+            <div class="p-4 border-t border-[#3D302B]">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 bg-rose-900/40 hover:bg-rose-900 text-rose-200 px-4 py-2.5 rounded-xl font-medium transition border border-rose-700/30 text-xs">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Keluar Akun</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            
+            <header class="bg-white/80 backdrop-blur-md shadow-sm px-6 py-4 flex justify-between items-center border-b border-amber-100">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-amber-700 text-white p-2 rounded-xl shadow">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <h1 class="text-xl font-extrabold text-stone-800">Manajemen Pengguna</h1>
+                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-amber-200">Modul Hak Akses</span>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="text-right">
+                        <p class="text-xs font-bold text-stone-800">{{ auth()->user()->name }}</p>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">{{ auth()->user()->email }}</p>
+                    </div>
+                    <span class="bg-amber-800 text-white text-xs font-black px-3 py-1.5 rounded-xl uppercase tracking-wider shadow-sm">
+                        Role: {{ auth()->user()->role }}
+                    </span>
+                </div>
+            </header>
+
+            <main class="p-6 md:p-8 space-y-6">
+                
+                @if(session('success'))
+                    <div class="p-4 text-sm text-emerald-800 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center space-x-2">
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                        <span class="font-bold">{{ session('success') }}</span>
+                    </div>
+                @endif
+
+                <!-- Form Pengguna -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-amber-100 space-y-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-stone-800">Tambah Akun Pengguna Baru</h2>
+                        <p class="text-xs text-stone-400">Buat akun baru untuk Admin, Manager, atau Staf gudang.</p>
+                    </div>
+
+                    <form action="{{ route('users.store') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-stone-600 uppercase mb-1">Nama Lengkap</label>
+                                <input type="text" name="name" required placeholder="Contoh: Siska Staf Gudang" class="w-full bg-amber-50/40 border border-amber-200 rounded-2xl px-4 py-3 text-sm focus:ring-amber-700 focus:border-amber-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-600 uppercase mb-1">Email</label>
+                                <input type="email" name="email" required placeholder="email@stockify.com" class="w-full bg-amber-50/40 border border-amber-200 rounded-2xl px-4 py-3 text-sm focus:ring-amber-700 focus:border-amber-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-600 uppercase mb-1">Password</label>
+                                <input type="password" name="password" required placeholder="Minimal 6 karakter" class="w-full bg-amber-50/40 border border-amber-200 rounded-2xl px-4 py-3 text-sm focus:ring-amber-700 focus:border-amber-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-stone-600 uppercase mb-1">Hak Akses (Role)</label>
+                                <select name="role" required class="w-full bg-amber-50/40 border border-amber-200 rounded-2xl px-4 py-3 text-sm focus:ring-amber-700 focus:border-amber-700">
+                                    <option value="staf">Staf (Pencatatan Transaksi)</option>
+                                    <option value="manager">Manager (Master Data & Laporan)</option>
+                                    <option value="admin">Admin (Akses Penuh)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-6 rounded-2xl shadow-md transition text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Simpan Pengguna Baru</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabel Pengguna -->
+                <div class="bg-white rounded-3xl shadow-sm border border-amber-100 overflow-hidden">
+                    <div class="p-6 border-b border-amber-100 bg-amber-50/30">
+                        <h3 class="text-lg font-bold text-stone-800">Daftar Akun Terdaftar</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-amber-100/60 text-stone-600 uppercase text-xs tracking-wider border-b border-amber-100">
+                                    <th class="py-4 px-6 font-bold">#</th>
+                                    <th class="py-4 px-6 font-bold">Nama</th>
+                                    <th class="py-4 px-6 font-bold">Email</th>
+                                    <th class="py-4 px-6 font-bold">Role</th>
+                                    <th class="py-4 px-6 font-bold text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-amber-50 text-sm text-stone-600">
+                                @forelse($users as $u)
+                                <tr class="hover:bg-amber-50/40 transition">
+                                    <td class="py-4 px-6 font-bold text-stone-400">{{ $loop->iteration }}</td>
+                                    <td class="py-4 px-6 font-bold text-stone-800">{{ $u->name }}</td>
+                                    <td class="py-4 px-6 text-stone-600">{{ $u->email }}</td>
+                                    <td class="py-4 px-6">
+                                        @if($u->role === 'admin')
+                                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">Admin</span>
+                                        @elseif($u->role === 'manager')
+                                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">Manager</span>
+                                        @else
+                                            <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold">Staf</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-4 px-6 text-center">
+                                        @if($u->id !== auth()->id())
+                                        <form action="{{ route('users.destroy', $u->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl text-xs font-bold transition border border-rose-200">
+                                                <i class="fa-solid fa-trash-can mr-1"></i> Hapus
+                                            </button>
+                                        </form>
+                                        @else
+                                            <span class="text-xs text-stone-400 italic">Akun Anda</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="py-10 text-center text-stone-400">Belum ada data pengguna.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
         </div>
-
-        @if(session('success'))
-            <div class="bg-green-100 text-green-700 p-3 rounded mb-4 font-medium">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <!-- Form Tambah User -->
-        <form action="/users" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded border border-gray-200">
-            @csrf
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nama</label>
-                <input type="text" name="name" required class="w-full border rounded p-2 text-sm mt-1">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" name="email" required class="w-full border rounded p-2 text-sm mt-1">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" name="password" required class="w-full border rounded p-2 text-sm mt-1">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Role</label>
-                <select name="role" required class="w-full border rounded p-2 text-sm mt-1">
-                    <option value="staff">Staff Gudang</option>
-                    <option value="manajer">Manajer Gudang</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <div class="md:col-span-4 text-right">
-                <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 text-sm font-medium">
-                    + Tambah Pengguna
-                </button>
-            </div>
-        </form>
-
-        <!-- Tabel Daftar User -->
-        <table class="w-full text-left border-collapse border border-gray-200">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border p-3">Nama</th>
-                    <th class="border p-3">Email</th>
-                    <th class="border p-3">Role</th>
-                    <th class="border p-3 text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($users as $user)
-                <tr>
-                    <td class="border p-3 font-medium">{{ $user->name }}</td>
-                    <td class="border p-3">{{ $user->email }}</td>
-                    <td class="border p-3 capitalize">
-                        <span class="px-2 py-1 text-xs font-semibold rounded 
-                            {{ $user->role == 'admin' ? 'bg-purple-100 text-purple-700' : ($user->role == 'manajer' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700') }}">
-                            {{ $user->role ?? 'Staff' }}
-                        </span>
-                    </td>
-                    <td class="border p-3 text-center">
-                        <form action="/users/{{ $user->id }}" method="POST" onsubmit="return confirm('Yakin hapus pengguna ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:underline text-sm">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
     </div>
 </body>
 </html>
